@@ -1,6 +1,23 @@
-from flask import *
+from flask import Flask, render_template, request
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+
 
 app = Flask(__name__)
+
+# app.config.update(
+#     SECRET_KEY='topsecret',
+#     SQLALCHEMY_DATABASE_URI='<database>:<user_id>:<password>@<server>/<database_name>',
+#     SQLALCHEMY_TRACK_MODIFICATIONS=False
+# )
+
+app.config.update(
+    SECRET_KEY='password',
+    SQLALCHEMY_DATABASE_URI='postgresql://postgres:password@localhost/catalog_db',
+    SQLALCHEMY_TRACK_MODIFICATIONS=False
+)
+
+db = SQLAlchemy(app)
 
 
 @app.route('/index')
@@ -170,5 +187,61 @@ def jinja_macros():
     return render_template('using_macros.html', movies=movies_dict)
 
 
+print("Before")
+
+
+# PUBLICATION TABLE
+# class Publication(db.Model):
+#     __tablename__ = 'publication'
+class Publication(db.Model):
+    pub_id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+
+    def __init__(self, pub_id, name):
+        self.pub_id = pub_id
+        self.name = name
+
+    def __repr__(self):
+        return f'The id is {self.pub_id}, Name is is {self.name}'
+
+
+# BOOK TABLE
+class Book(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(500), nullable=False, index=True)
+    author = db.Column(db.String(350))
+    avg_rating = db.Column(db.Float)
+    format = db.Column(db.String(50))
+    image = db.Column(db.String(100), unique=True)
+    num_pages = db.Column(db.Integer)
+    pub_date = db.Column(db.DateTime, default=datetime.utcnow())
+
+    # ESTABLISH A RELATIONSHIP BETWEEN PUBLICATION AND BOOK TABLES
+    pub_id = db.Column(db.Integer, db.ForeignKey('publication.pub_id'))
+
+    def __init__(self, title, author, avg_rating, book_format, image, num_pages, pub_id):
+        self.title = title
+        self.author = author
+        self.avg_rating = avg_rating
+        self.format = book_format
+        self.image = image
+        self.num_pages = num_pages
+        self.pub_id = pub_id
+
+    def __repr__(self):
+        return 'Book title: {self.title} Author:  {self.author}'
+
+
 if __name__ == '__main__':
+    print("made it)")
+    db.create_all()
     app.run(debug=True)
+
+# To get the creaete_all() to execute do it in terminal in Python console
+# >>> from app import app, db
+# >>> app.app_context().push()
+# >>> db.create_all()
+
+# Or try this.....
+# with app.app_context():
+#     db.create_all()
