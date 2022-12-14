@@ -226,7 +226,7 @@ class Book(db.Model):
         self.pub_id = pub_id
 
     def __repr__(self):
-        return 'Book title: {self.title} Author:  {self.author}'
+        return f'Book title: {self.title} Author:  {self.author}'
 
 
 with app.app_context():
@@ -249,6 +249,7 @@ if __name__ == '__main__':
 
 # To add records from the Python console:
 # >>> from app import app, db, Publication, Book
+# >>> app.app_context().push()
 # >>> pub = Publication(100, "Staples Publishing")
 # >>> pub
 # The id is 100, Name is is Staples Publishing
@@ -267,6 +268,69 @@ if __name__ == '__main__':
 # >>> pub5 = Publication(500, "Maple Leaf Publishing")
 # >>> db.session.add_all([pub3, pub4, pub5])
 # >>> db.session.commit()
+# >>> db.session.close()
 
-
-
+# >>> dir(Book)
+# >>> Book.query.all()
+# >>> all = Book.query.all()
+# >>> all
+# [Book title: Miky's Delivery Service Author:  William Dobelli, Book title: The Secret Life of Walter Kitty Author:  Kitty Stiller, Book title: The Empty Book of Life Author:  Roy Williamson, Book title: Life After Dealth Author:  Nikita Kimmel, Book title: The Legen
+# d of Dracula Author:  Charles Rowling, Book title: Taming Dragons Author:  James Vonnegut, Book title: The Singing Magpie Author:  Oscar Steinbeck, Book title: Mr. Incognito Author:  Amelia Funke, Book title: A Dog without purpose Author:  Edgar Dahl, Book title: A
+# Frog's Life Author:  Herman Capote, Book title: Logan Returns Author:  Margaret Elliot, Book title: Thieves of Kaalapani Author:  Mohit Gustav, Book title: As Men Thinketh Author:  Edward McPhee, Book title: Mathematics of Music Author:  Mary Turing, Book title: The
+#  Mystery of Mandalas Author:  Jack Morrison, Book title: The Sacred Book of Kairo Author:  Heidi Zimmerman, Book title: Love is forever, As Long as it lasts Author:  Kovi O'Hara, Book title: Order in Chaos Author:  Wendy Sherman]
+# >>> type(all)
+# <class 'list'>
+# >>> first = Book.query.first()
+# >>> first
+# Book title: Miky's Delivery Service Author:  William Dobelli
+# >>>
+# >>> filter_data = Book.query.filter_by(format='ePub')
+# >>> filter_data
+# <flask_sqlalchemy.query.Query object at 0x000002212417CFA0>
+# >>> filter_data = Book.query.filter_by(format='ePub').all()
+# >>> filter_data
+# [Book title: Miky's Delivery Service Author:  William Dobelli, Book title: The Sacred Book of Kairo Author:  Heidi Zimmerman]
+# >>>
+# >>> fancy_data = Book.query.filter_by(format='Paperback').order_by(Book.title).all()
+# >>> fancy_data
+# [Book title: As Men Thinketh Author:  Edward McPhee, Book title: Life After Dealth Author:  Nikita Kimmel, Book title: The Mystery of Mandalas Author:  Jack Morrison, Book title: Thieves of Kaalapani Author:  Mohit Gustav]
+# >>>
+# >>> result = Publication.query.filter_by(name='Broadway Press').first()
+# >>> result
+# The name is is Broadway Press
+# >>> result.name
+# 'Broadway Press'
+# >>> result.id
+# # 6
+# >>> broadway_books = Book.query.filter_by(pub_id = result.id).all()
+# >>> broadway_books
+# [Book title: As Men Thinketh Author:  Edward McPhee, Book title: Mathematics of Music Author:  Mary Turing, Book title: The Mystery of Mandalas Author:  Jack Morrison]
+# >>>
+# >>> u = Book.query.get(34)
+# >>> u
+# Book title: The Sacred Book of Kairo Author:  Heidi Zimmerman
+# >>> u.id
+# 34
+# >>> u.title
+# 'The Sacred Book of Kairo'
+# >>> u.format
+# 'ePub'
+# >>> u.format = 'Hardcover'
+# >>> db.session.commit()
+# >>> u.format
+# 'Hardcover'
+# >>> x = Book.query.get(35)
+# >>> x
+# Book title: Love is forever, As Long as it lasts Author:  Kovi O'Hara
+# >>> x.id
+# 35
+# >>> db.session.delete(x)
+# >>> db.session.commit()
+# >>>
+# >>> Book.query.filter_by(pub_id=6).delete()
+# 3
+# >>> db.session.commit()
+# >>> Publication.query.filter_by(id=6).delete()
+# 1
+# >>> db.session.commit()
+# >>>
