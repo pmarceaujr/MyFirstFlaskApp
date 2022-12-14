@@ -195,12 +195,11 @@ class Publication(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
 
-    def __init__(self, id, name):
-        self.id = id
+    def __init__(self, name):
         self.name = name
 
     def __repr__(self):
-        return f'The id is {self.id}, Name is is {self.name}'
+        return f'The name is is {self.name}'
 
 
 # BOOK TABLE
@@ -249,7 +248,7 @@ if __name__ == '__main__':
 #     db.create_all()
 
 # To add records from the Python console:
-# >>> from app import app, db, Publication
+# >>> from app import app, db, Publication, Book
 # >>> pub = Publication(100, "Staples Publishing")
 # >>> pub
 # The id is 100, Name is is Staples Publishing
