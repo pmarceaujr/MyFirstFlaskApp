@@ -232,6 +232,10 @@ class Book(db.Model):
         return 'Book title: {self.title} Author:  {self.author}'
 
 
+with app.app_context():
+    print("do db")
+    db.create_all()
+
 if __name__ == '__main__':
     print("made it)")
     db.create_all()
