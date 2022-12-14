@@ -191,18 +191,16 @@ print("Before")
 
 
 # PUBLICATION TABLE
-# class Publication(db.Model):
-#     __tablename__ = 'publication'
 class Publication(db.Model):
-    pub_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
 
-    def __init__(self, pub_id, name):
-        self.pub_id = pub_id
+    def __init__(self, id, name):
+        self.id = id
         self.name = name
 
     def __repr__(self):
-        return f'The id is {self.pub_id}, Name is is {self.name}'
+        return f'The id is {self.id}, Name is is {self.name}'
 
 
 # BOOK TABLE
@@ -217,7 +215,7 @@ class Book(db.Model):
     pub_date = db.Column(db.DateTime, default=datetime.utcnow())
 
     # ESTABLISH A RELATIONSHIP BETWEEN PUBLICATION AND BOOK TABLES
-    pub_id = db.Column(db.Integer, db.ForeignKey('publication.pub_id'))
+    pub_id = db.Column(db.Integer, db.ForeignKey('publication.id'))
 
     def __init__(self, title, author, avg_rating, book_format, image, num_pages, pub_id):
         self.title = title
@@ -246,6 +244,30 @@ if __name__ == '__main__':
 # >>> app.app_context().push()
 # >>> db.create_all()
 
-# Or try this.....
+# Or try this in the code:
 # with app.app_context():
 #     db.create_all()
+
+# To add records from the Python console:
+# >>> from app import app, db, Publication
+# >>> pub = Publication(100, "Staples Publishing")
+# >>> pub
+# The id is 100, Name is is Staples Publishing
+# >>> pub2 = Publication(200, "Oxford Publishing")
+# >>> pub2
+# The id is 200, Name is is Oxford Publishing
+# >>> pub.name
+# 'Staples Publishing'
+# >>> app.app_context().push()
+# >>> db.session.add(pub)
+# >>> db.session.commit()
+# >>> db.session.add(pub2)
+# >>> db.session.commit()
+# >>> pub3 = Publication(300, "Paramount Press")
+# >>> pub4 = Publication(400, "Oracle Press")
+# >>> pub5 = Publication(500, "Maple Leaf Publishing")
+# >>> db.session.add_all([pub3, pub4, pub5])
+# >>> db.session.commit()
+
+
+
