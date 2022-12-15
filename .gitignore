@@ -3,7 +3,8 @@ zNotes/
 venv_rds/
 .idea/
 
-
+# Scaled App ignores
+Refactored/BookApp/venv_book/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
