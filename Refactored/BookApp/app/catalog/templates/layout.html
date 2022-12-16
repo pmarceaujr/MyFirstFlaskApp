@@ -20,32 +20,37 @@
     <div class="wrapper">
         {# navigation bar #}
         {% block navbar %}
-            <nav class="navbar navbar-inverse">
-                <div class="container">
-                    <a class="navbar navbar-text" href="{{ url_for('main.show_books') }}">
-                        <h3 class="title"> The Books Shop Around the Corner </h3>
-                    </a>
-                    <ul class="nav navbar-nav pull-right">
-                        <li><a href="{{ url_for('main.show_books') }}"> Home </a></li>
-                        <li><a href=""> Register </a></li>
-                        <li>
-                                <a href=""> SignOut </a>
+        <nav class="navbar navbar-inverse">
+            <div class="container">
+                <a class="navbar-brand title" href="{{ url_for('main.show_books') }}">Book Shop Around the Corner</a>
 
-                                <a href=""> SignIn </a>
+                <ul class="nav navbar-nav pull-right nav-list">
+                    <li><a href="{{ url_for('main.show_books') }}"> Home </a></li>
+                    <li>
+                        {% if not current_user.is_authenticated %}
+                            <a href="{{ url_for('authentication.register_user') }}"> Register </a>
+                        {% endif %}
 
-                        </li>
-                        <li>
-                            <a href="">
-
-                                    Logged-In as <b style="color: deeppink"> Mr Paul </b>
-
-                                    Not Logged-In
-
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+                    </li>
+                    <li>
+                        {% if current_user.is_authenticated %}
+                             <a href="{{ url_for('authentication.user_logoff') }}"> SignOut </a>
+                        {% else %}
+                            <a href="{{ url_for('authentication.user_login') }}"> SignIn </a>
+                        {% endif %}
+                    </li>
+                    <li>
+                        <a href="">
+                            {%  if current_user.is_authenticated %}
+                                LoggedIn as <b style="color: deeppink">{{ current_user.user_name.title() }}</b>
+                            {% else %}
+                                Not LoggedIn
+                            {% endif %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
         {% endblock navbar %}
 
         {# flash messaging #}
